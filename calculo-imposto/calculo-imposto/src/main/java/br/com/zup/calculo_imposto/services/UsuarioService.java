@@ -46,17 +46,42 @@ public class UsuarioService implements UserDetailsService {
     }
 
     public Usuario salvarUsuario(Usuario usuario) {
+        //codifica a senha antes de salvar
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        // Salva o usuário no banco de dados
+        return usuarioRepository.save(usuario);
     }
 
     public List<Usuario> listarTodos() {
+        // Retorna todos os usuários do banco de dados
+        return usuarioRepository.findAll();
     }
 
     public Usuario buscarPorId(Long id) {
+        // Busca um usuário pelo ID
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID: " + id));
     }
 
     public Usuario atualizarUsuario(Long id, Usuario usuarioAtualizado) {
+        // Busca o usuário existente
+        Usuario usuarioExistente = buscarPorId(id);
+
+        // Atualiza os campos do usuário
+        usuarioExistente.setUsername(usuarioAtualizado.getUsername());
+        usuarioExistente.setPassword(passwordEncoder.encode(usuarioAtualizado.getPassword()));
+        usuarioExistente.setRole(usuarioAtualizado.getRole());
+
+        // Salva as alterações no banco de dados
+        return usuarioRepository.save(usuarioExistente);
     }
 
     public void deletarUsuario(Long id) {
+        // Verifica se o usuario existe antes de deletar
+        Usuario usuario = buscarPorId(id);
+
+        //Remove o usuário do banco de dados
+        usuarioRepository.delete(usuario);
     }
 }
