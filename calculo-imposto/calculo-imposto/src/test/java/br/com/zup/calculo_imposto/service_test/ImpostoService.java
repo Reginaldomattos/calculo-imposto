@@ -3,7 +3,6 @@ package br.com.zup.calculo_imposto.service_test;
 import br.com.zup.calculo_imposto.models.Imposto;
 import br.com.zup.calculo_imposto.repositorys.ImpostoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,16 +14,18 @@ public class ImpostoService {
     private ImpostoRepository impostoRepository;
 
     public List<Imposto> ListarImpostos() {
+
         return impostoRepository.findAll();
     }
 
     public Imposto cadastrarImposto(Imposto imposto) {
+
         return impostoRepository.save(imposto);
     }
 
     public Imposto obterImposto(Long id) {
         return impostoRepository.findById(id)
-                .orElseThrow(() -> new ConfigDataResourceNotFoundException("Imposto não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Imposto não encontrado"));
     }
 
     public void excluirImposto (Long id) {
