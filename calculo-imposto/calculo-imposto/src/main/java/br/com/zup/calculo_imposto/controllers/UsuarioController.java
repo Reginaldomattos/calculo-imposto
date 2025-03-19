@@ -1,25 +1,52 @@
 package br.com.zup.calculo_imposto.controllers;
 
-
 import br.com.zup.calculo_imposto.models.Usuario;
+import br.com.zup.calculo_imposto.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Usuario> registrarUsuario(@RequestBody Usuario usuario) {
-        return new ResponseEntity<>(usuarioService.registrarUsuario(usuario), HttpStatus.CREATED);
+    // CREATE
+    @PostMapping
+    public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
+        Usuario novoUsuario = usuarioService.salvarUsuario(usuario);
+        return ResponseEntity.ok(novoUsuario);
+    }
 
+    // READ (Listar todos)
+    @GetMapping
+    public ResponseEntity<List<Usuario>> listarUsuarios() {
+        List<Usuario> usuarios = usuarioService.listarTodos();
+        return ResponseEntity.ok(usuarios);
+    }
+
+    // READ (Buscar por ID)
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Long id) {
+        Usuario usuario = usuarioService.buscarPorId(id);
+        return ResponseEntity.ok(usuario);
+    }
+
+    // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuarioAtualizado) {
+        Usuario usuario = usuarioService.atualizarUsuario(id, usuarioAtualizado);
+        return ResponseEntity.ok(usuario);
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
+        usuarioService.deletarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 }
