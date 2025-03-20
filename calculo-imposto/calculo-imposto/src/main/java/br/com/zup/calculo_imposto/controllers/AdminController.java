@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @GetMapping("/Bem Vindo")
+    @GetMapping("/Bem-Vindo")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String Bem_Vindo_Admin() {
         return "Bem-vindo, Administrador!";
