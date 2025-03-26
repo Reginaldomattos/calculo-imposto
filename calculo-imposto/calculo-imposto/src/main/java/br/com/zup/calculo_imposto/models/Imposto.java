@@ -6,8 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jdk.jfr.DataAmount;
+import lombok.Data;
 
-@Entity
+@Data
+@Entity(name = "IMPOSTO")
 public class Imposto {
 
     @Id
