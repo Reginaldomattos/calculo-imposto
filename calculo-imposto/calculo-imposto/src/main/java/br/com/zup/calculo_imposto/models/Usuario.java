@@ -1,19 +1,21 @@
 package br.com.zup.calculo_imposto.models;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
 
-@Entity
+@Entity(name = "USUARIO")
+@Data
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Nome é obrigatório")
     private String username;
+    @NotBlank(message = "Senha é obrigatória")
     private String password;
+    @Enumerated(EnumType.STRING)
     private String role;
 
     public Long getId() {
