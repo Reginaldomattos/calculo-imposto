@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -13,38 +14,53 @@ import java.util.List;
 @Component
 public class JwtUtil {
 
-    private Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final long expirationTime = 1000 * 60 * 60; // 1 hora
 
     public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // horas
-                .signWith(SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String extractUserName(String token) {
-        return extractUserName(token, claims::getSubject);
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, ClaimsResolver<T> claimsResolver) {
+    public <T> T extractClaim(String token, java.util.function.Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
-        return claimsResolver.resolve(claims);
-    }
-    public interface ClaimsResolver<T> {
-        T resolve(Claims claims);
-    }
-    public Claims extractAllClaims(String token) {
-        JwtParser parser = Jwts.parser().setSigningKey(SECRET_KEY).build();
-        return parser.parseClaimsJws(token).getBody();
-    }
-    public String getUserNameFromToken(String token) {
-        return extractAllClaims(token).getSubject();
-    }
-    public boolean isTokenExpired(String token) {
-        return extractAllClaims(token).getExpiration().before(new Date());
+        return claimsResolver.apply(claims);
     }
 
+    public Claims extractAllClaims(String token) {
+        try {
+            JwtParser parser = Jwts.builder()
+                    .setSigningKey(secretKey)
+                    .build();
+            return parser.parseClaimsJws(token).getBody();
+        } catch (Exception e) {
+            // Logar a exceção ou lançar uma exceção customizada, dependendo da necessidade
+            return null; // ou lançar uma exceção
+        }
+    }
+
+    public String getUsernameFromToken(String token) {
+        Claims claims = extractAllClaims(token);
+        if(claims != null) {
+            return claims.getSubject();
+        }
+        return null;
+    }
+
+    public boolean isTokenExpired(String token) {
+        Claims claims = extractAllClaims(token);
+        if(claims != null) {
+            return claims.getExpiration().before(new Date());
+        }
+        return true;
+    }
 }
