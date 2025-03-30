@@ -1,5 +1,6 @@
 package br.com.zup.calculo_imposto.Infra;
 
+import ch.qos.logback.classic.helpers.MDCInsertingServletFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -33,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal (HttpServletRequest request,
                                      HttpServletResponse response,
-                                     FilterChain chain) throws ServletException, IOException, java.io.IOException {
+                                     FilterChain chain) throws ServletException, IOException, IOException {
         String token = getTokenFromRequest(request);
 
         if (StringUtils.hasText(token) && JwtUtil.validateToken(token)) {
@@ -52,7 +53,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         }
-        filterChain.doFilter(request, response);
+        MDCInsertingServletFilter filter = new MDCInsertingServletFilter();
+        filter.doFilter(request, response, chain); // Certifique-se de que request, response e chain são do tipo correto
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
