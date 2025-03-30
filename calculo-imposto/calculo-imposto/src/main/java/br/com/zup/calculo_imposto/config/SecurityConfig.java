@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .requestMatchers("/user/cadastrar", "/user/login").permitAll()
                 .requestMatchers(HttpMethod.POST,"/tipos", "tipos/calculo").hasAnyAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.GET,"/tipos").authenticated()
-                .qualquerRequisicao().autenticado()
+                .anyRequest().authenticated()
         );
         http.csrf(AbstractHttpConfigurer::disable);
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
