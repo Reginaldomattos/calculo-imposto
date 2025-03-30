@@ -1,25 +1,35 @@
 package br.com.zup.calculo_imposto.controllers;
 
+import br.com.zup.calculo_imposto.dto.UsuarioDTO;
 import br.com.zup.calculo_imposto.models.Usuario;
 import br.com.zup.calculo_imposto.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    @Autowired
+
     private UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Usuario> criarUsuario(@RequestBody Usuario usuario) {
-        Usuario novoUsuario = usuarioService.salvarUsuario(usuario);
-        return ResponseEntity.ok(novoUsuario);
+    public ResponseEntity<Usuario> criarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+        Usuario novoUsuario = usuarioService.registrarUsuario(usuarioDTO);
+        Map<String, Object> response = new HashMap<>();
+        response.put("mensagem", "Usuário criado com sucesso!");
+        response.put("usuario", novoUsuario);
+        return ResponseEntity.ok((Usuario) response);
     }
 
     // READ (Listar todos)
