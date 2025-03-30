@@ -10,7 +10,7 @@ public class CalculoImpostoRequestDTO {
 
     public CalculoImpostoRequestDTO(Long tipoImpostoId, double valorBase) {
         this.tipoImpostoId = tipoImpostoId;
-        this.valorBase = valorBase;
+        this.ValorBase = valorBase;
 
     }
     public CalculoImpostoRequestDTO() {
