@@ -1,6 +1,6 @@
 package br.com.zup.calculo_imposto.models;
 
-
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,37 +16,15 @@ public class Usuario {
     @NotBlank(message = "Senha é obrigatória")
     private String password;
     @Enumerated(EnumType.STRING)
-    private String role;
+    private Role role;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
+    public Usuario(Long id, String username, String password, Role role) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
         this.role = role;
+    }
+    public Usuario() {
+
     }
 }
