@@ -1,4 +1,4 @@
-package br.com.zup.calculo_imposto.dto;
+package br.com.zup.calculo_imposto.dtos;
 
 import lombok.Data;
 
